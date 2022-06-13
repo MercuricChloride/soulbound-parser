@@ -1,9 +1,11 @@
 {
   "name": "soulbound-parser",
-  "version": "1.0.2",
-  "description": "A simple package that allows us to parse an ethereum abi for use in soulbound studio",
+  "version": "1.0.5",
+  "description": "Helper functions for use in soulbound studio",
   "author": "blind_nabler",
-  "type": "module",
-  "main": "index.js",
-  "license": "GPL-3.0-or-later"
+  "main": "index.cjs",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "axios": "^0.27.2"
+  }
 }
