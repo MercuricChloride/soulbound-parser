@@ -17,6 +17,9 @@ export function parse(abi) {
   return abi.filter((item) => item.type === "event");
 }
 
+// @notice function to get the etherscan-like url for getting a network
+// @param chainId number, this is the chainId of the network
+// @returns etherscan-like url
 export function getEtherscanLikeAPIUrl(network) {
   switch (network) {
     case 1:
@@ -40,8 +43,9 @@ export function getEtherscanLikeAPIUrl(network) {
 
 // @notice function to fetch the abi from etherscan
 // @param address String, this is the contract address
+// @param chainId, this is the contract address (default is one)
 // @returns event parsed abi for use in the frontEnd;
-export async function fetchAbi(address, chainId) {
+export async function fetchAbi(address, chainId = 1) {
   return await axios
     .get(
       `${getEtherscanLikeAPIUrl(
@@ -53,19 +57,33 @@ export async function fetchAbi(address, chainId) {
     });
 }
 
+export async function fetchRawAbi(address, chainId = 1) {
+  return await axios
+    .get(
+      `${getEtherscanLikeAPIUrl(
+        chainId
+      )}?module=contract&action=getabi&address=${address}`
+    )
+    .then((res) => {
+      return res.data.result;
+    });
+}
+
 // @notice function to call to handle proxies and their ABIs
 // @param addr String, this is the proxy address that the user interacts with
+// @param chainId number, this is the chainId the contract is deployed to (if not given, default is one)
 // @returns [event parsed abi for use in the frontEnd, address of the proxy];
-export async function handleContract(addr) {
-  const abi = await fetchAbi(addr);
+export async function handleContract(addr, chainId) {
+  const abi = await fetchAbi(addr, chainId);
   return [abi, addr];
 }
 
 // @notice function to call to handle proxies and their ABIs
 // @param addr String, this is the proxy address that the user interacts with
 // @param impl String, this is the current proxy implimentation
+// @param chainId number, this is the chainId the contract is deployed to (if not given, default is one)
 // @returns [event parsed abi for use in the frontEnd, address of the Proxy];
-export async function handleProxy(addr, impl) {
-  const abi = await fetchAbi(impl);
+export async function handleProxy(addr, impl, chainId) {
+  const abi = await fetchAbi(impl, chainId);
   return [abi, addr];
 }
